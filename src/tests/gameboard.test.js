@@ -31,3 +31,11 @@ test('testing allShipsSunk', () => {
     testGameboard.receiveAttack(0,1);
     expect(testGameboard.allShipsSunk()).toBe(true);
 }); 
+test('testing totalmisses', () => {
+    const testGameboard = new Gameboard();
+    testGameboard.placeShip(0,0);
+    testGameboard.placeShip(0,1);
+    testGameboard.receiveAttack(0,0);
+    testGameboard.receiveAttack(0,3);
+    expect(testGameboard.totalMisses()).toBe(1);
+}); 
