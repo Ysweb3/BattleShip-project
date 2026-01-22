@@ -1,7 +1,11 @@
 import { Ship } from './ship.js';
 export class Gameboard {
-    constructor(size) {
-        this.size = size;
+    board = [];
+    totalAttempts = 0;
+    totalHits = 0;
+    totalShips= 0;
+    constructor() {
+        this.board = this.createGameBoard();
     }
     createGameBoard() {
         const board = [];
@@ -19,12 +23,35 @@ export class Gameboard {
     return board;
     }
     placeShip(x,y) {
-         
+        if(!this.board[x][y].hasShip) {
+            this.board[x][y].hasShip = true;
+            // row[x][y].ship = ship; TODO implement the types of ships 
+            this.totalShips++;
+            return true;
+        }
+  
+        return false;
     }
     receiveAttack(x,y) {
-        
+        if(this.board[x][y].hasShip) {
+            this.board[x][y].isHit = true;
+            this.totalHits++;
+            this.totalAttempts++;
+            return true;
+        }
+        this.totalAttempts++;
+        return false;
+    }
+    totalAttempts(){
+        return this.totalAttempts;
+    }
+    totalHits(){
+        return this.totalHits;
+    }
+    totalMisses(){
+        return this.totalAttempts - this.totalHits;
     }
     allShipsSunk() {
-        
+        return this.totalShips === this.totalHits;
     }
 }
