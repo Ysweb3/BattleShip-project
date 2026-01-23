@@ -25,12 +25,20 @@ export class Gameboard {
     placeShip(x,y) {
         if(!this.board[x][y].hasShip) {
             this.board[x][y].hasShip = true;
-            // row[x][y].ship = ship; TODO implement the types of ships 
+ 
             this.totalShips++;
             return true;
         }
   
         return false;
+    }
+    addShipType(x,y,ship){
+         if(this.board[x][y].hasShip) {
+            this.board[x][y].ship = ship;
+        }
+    }
+    checkShipType(x,y){
+        return this.board[x][y].ship;
     }
     receiveAttack(x,y) {
         if(this.board[x][y].hasShip) {
@@ -42,6 +50,7 @@ export class Gameboard {
         this.totalAttempts++;
         return false;
     }
+    
     totalAttempts(){
         return this.totalAttempts;
     }

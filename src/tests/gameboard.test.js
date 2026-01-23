@@ -39,3 +39,9 @@ test('testing totalmisses', () => {
     testGameboard.receiveAttack(0,3);
     expect(testGameboard.totalMisses()).toBe(1);
 }); 
+test('testing ship type', () => {
+    const testGameboard = new Gameboard();
+    testGameboard.placeShip(0,0);
+    testGameboard.addShipType(0,0,"Battleship");
+    expect(testGameboard.checkShipType(0,0)).toBe("Battleship");
+}); 
