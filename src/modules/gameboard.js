@@ -1,5 +1,5 @@
 import { Ship } from './ship.js';
-export class Gameboard {
+export class Gameboard {//Gameboard class:Grid of 10x10 cells,total two gameboards(player and AI)
     board = [];
     totalAttempts = 0;
     totalHits = 0;
@@ -60,7 +60,7 @@ export class Gameboard {
     totalMisses(){
         return this.totalAttempts - this.totalHits;
     }
-    allShipsSunk() {
+    allShipsSunk() {//To be checked every turn to determine if the game is over
         return this.totalShips === this.totalHits;
     }
 }
