@@ -17,3 +17,8 @@ test('checking the number of hits', () =>{
     ship3.hit();
     expect(ship3.hits).toBe(2);
 })
+test('checking the ship name', () =>{
+    const ship3 = new Ship(3);
+    ship3.name = "Battleship";
+    expect(ship3.name).toBe("Battleship");
+})
