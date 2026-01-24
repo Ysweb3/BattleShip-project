@@ -1,3 +1,4 @@
+import {Gameboard} from './gameboard.js';
 export class RealPlayer {
     constructor() {
         this.gameboard = new Gameboard();
