@@ -1,3 +1,55 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+#header{
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+    height: 50px;
+    /* background-color: rgb(237, 237, 237); */
+    box-shadow:
+    0px 1px 3px rgba(0, 0, 0, 0.12),
+    0px 1px 2px rgba(0, 0, 0, 0.24);
+    margin: 0;
+    padding: 0;
+}
+#header p{
+    font-size: 1.5rem;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    margin: 0;
+    margin-left: 50px;
+    padding-top: 5px;
+    
+}
 body{
-    background-color: rgb(101, 230, 31);
+    background-color: #666363;
+}
+#playerBoard, #opponentBoard {
+    margin: 20px;
+    display: inline-block;
+}
+
+#boardContainer{
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+.cell {
+    user-select: none; 
+}
+
+.hit {
+    background-color: #ff6b6b !important;
+}
+
+.miss {
+    background-color: #a0a0a0 !important; 
+}
+
+.ship {
+    background-color: #4dabf7; 
 }
