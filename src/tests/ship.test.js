@@ -22,3 +22,13 @@ test('checking the ship name', () =>{
     ship3.name = "Battleship";
     expect(ship3.name).toBe("Battleship");
 })
+test('checking for negative or zero length', () => {
+    // Test negative length
+    expect(() => new Ship(-2, "Invalid Ship")).toThrow("Ship length must be a positive number");
+    
+    // Test zero length
+    expect(() => new Ship(0, "Zero Ship")).toThrow("Ship length must be a positive number");
+    
+    // Test non-number length
+    expect(() => new Ship("not a number", "Invalid Ship")).toThrow("Ship length must be a positive number");
+});
