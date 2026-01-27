@@ -14,7 +14,7 @@ const opponentboard = document.getElementById('opponentBoard');
 
 
 
-function createGrid(boardElement, size = 10,board) {
+function createGrid(boardElement, size = 10,board,boardType) {
     // Clear any existing grid
     boardElement.innerHTML = '';
     
@@ -43,63 +43,100 @@ function createGrid(boardElement, size = 10,board) {
             cell.style.transition = 'background-color 0.6s';// Smooth transition for hover effect change this to make it faster or slower
             
 
-            cell.addEventListener('mouseOver', () => {
-                if (!cell.classList.contains('hit') && !cell.classList.contains('miss')) {
-                    cell.style.backgroundColor = '#868585ff';
-                }
-            });
+            // cell.addEventListener('mouseOver', () => {
+            //     if (!cell.classList.contains('hit') && !cell.classList.contains('miss')) {
+            //         cell.style.backgroundColor = '#8b8b8bff';
+            //     }
+            // });
             
-            cell.addEventListener('mouseLeave', () => {
-                if (!cell.classList.contains('hit') && !cell.classList.contains('miss')) {
-                    cell.style.backgroundColor = '#f0f0f0';
-                }
-            });
+            // cell.addEventListener('mouseLeave', () => {
+            //     if (!cell.classList.contains('hit') && !cell.classList.contains('miss')) {
+            //         cell.style.backgroundColor = '#f0f0f0';
+            //     }
+            // });
             
            
-            cell.addEventListener('click', () => handleCellClick(row, col, cell));
+            cell.addEventListener('click', () => handleCellClick(row, col, cell,boardType));
             
             boardElement.appendChild(cell);
 
-            board.addElementToCell(row, col, cell);//this connets the display board to the game board
+            board.addElementToCell(row, col, cell);//!Important this connects the display board to the game board
 
 }
     }
 }
+let turn = 'player1';
 
-function handleCellClick(row, col, cell){
-    console.log("row: " + row + " col: " + col);
-    if(playerBoard.board[row][col].hasShip||opponentBoard.board[row][col].hasShip ){
-        cell.style.backgroundColor = '#ff1717ff';
+function handleCellClick(row, col, cell, boardType){
+    console.log("row: " + row + " col: " + col + " board: " + boardType);
+    
+    if(turn === 'player1'){
+        // Player1 can only click on opponent's board
+        if(boardType !== 'opponent') {
+            console.log("Player1 can only attack opponent's board!");
+            return;
+        }
+        
+        if(opponentBoard.checkboat(row,col)){
+            cell.classList.add('hit');
+            opponentBoard.receiveAttack(row,col);
+            console.log("Hit!");
+        } else {
+            cell.classList.add('miss');
+            console.log("Miss!");
+        }
+        turn = 'player2';
     }
- 
+    else if(turn === 'player2'){
+        // Player2 can only click on player's board
+        if(boardType !== 'player') {
+            console.log("Player2 can only attack player's board!");
+            return;
+        }
+        
+        if(playerBoard.checkboat(row,col)){
+            cell.classList.add('hit');
+            playerBoard.receiveAttack(row,col);
+            console.log("Hit!");
+        } else {
+            cell.classList.add('miss');
+            console.log("Miss!");
+        }
+        turn = 'player1';
+    }
+    
+    // Check for game over
+    if(playerBoard.allShipsSunk()){
+        console.log("Player2 Wins!");
+    } else if(opponentBoard.allShipsSunk()){
+        console.log("Player1 Wins!");
+    }
 }
 function gameLoop(playerBoard,opponentBoard,player,opponent){
-//first place ships function is called to wait till all ships are placed
-//then gameloop will start
-//in gameloop first player will attack then opponent will attack
-//whilst checking for allShipsSunk to declare winner and end   
+
    addShipsToBoard(playerBoard);
-   addShipsToBoard(opponentBoard)
+   addShipsToBoard(opponentBoard);
+    
+   
    
 }
 
 function placeShips(playerBoard,opponentBoard,player,opponent){
-    
+    //TODO: Add manual ship placement logic
 }
 
-function checkWinner(playerBoard,opponentBoard,player,opponent){
-    
-}
+
 
 
 function addShipsToBoard(board) {
     // Add ships to the board
     for (let row = 0; row < 10; row++) {
         for (let col = 0; col < 10; col++) {
-            if(Math.random() > 0.85){
-                board.placeShip(row, col);
+            if(Math.random() > 0.9){
+                board.placeShip(row, col, "ship");
                 console.log("Placing ship at " + row + ", " + col);
                 board.board[row][col].element.style.backgroundColor = '#4dabf7';
+                board.board[row][col].element.classList.add('ship');
             }
         }
     }
@@ -109,7 +146,7 @@ function addShipsToBoard(board) {
 
 playerBoard.createGameBoard();
 opponentBoard.createGameBoard();
-createGrid(playerboard, 10, playerBoard);
-createGrid(opponentboard, 10, opponentBoard);
+createGrid(playerboard, 10, playerBoard, 'player');
+createGrid(opponentboard, 10, opponentBoard, 'opponent');
 gameLoop(playerBoard, opponentBoard, 'player', 'opponent');
 addShipsToBoard(playerBoard, opponentBoard);

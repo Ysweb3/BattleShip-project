@@ -1,7 +1,9 @@
 *{
     margin: 0;
     padding: 0;
+    border: 0 solid black;
 }
+
 #header{
     text-align: center;
     font-size: 2rem;

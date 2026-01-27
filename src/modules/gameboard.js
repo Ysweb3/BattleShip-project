@@ -23,20 +23,15 @@ export class Gameboard {//Gameboard class:Grid of 10x10 cells,total two gameboar
     }
     return board;
     }
-    placeShip(x,y) {
+    placeShip(x,y,ship) {
         if(!this.board[x][y].hasShip) {
             this.board[x][y].hasShip = true;
- 
+            this.board[x][y].ship = ship;
             this.totalShips++;
             return true;
         }
   
         return false;
-    }
-    addShipType(x,y,ship){
-         if(this.board[x][y].hasShip) {
-            this.board[x][y].ship = ship;
-        }
     }
     checkShipType(x,y){
         return this.board[x][y].ship;
@@ -51,8 +46,8 @@ export class Gameboard {//Gameboard class:Grid of 10x10 cells,total two gameboar
         this.totalAttempts++;
         return false;
     }
-    checkCell(x,y){
-        return this.board[x][y];
+    checkboat(x,y){
+        return this.board[x][y].hasShip;
     }
     totalAttempts(){
         return this.totalAttempts;
