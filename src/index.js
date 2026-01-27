@@ -70,7 +70,7 @@ let turn = 'player1';
 function handleCellClick(row, col, cell, boardType){
     console.log("row: " + row + " col: " + col + " board: " + boardType);
     
-    if(turn === 'player1'){
+    if(turn === 'player1' && !cell.classList.contains('hit') && !cell.classList.contains('miss')){
         // Player1 can only click on opponent's board
         if(boardType !== 'opponent') {
             console.log("Player1 can only attack opponent's board!");
@@ -87,7 +87,7 @@ function handleCellClick(row, col, cell, boardType){
         }
         turn = 'player2';
     }
-    else if(turn === 'player2'){
+    else if(turn === 'player2' && !cell.classList.contains('hit') && !cell.classList.contains('miss')){
         // Player2 can only click on player's board
         if(boardType !== 'player') {
             console.log("Player2 can only attack player's board!");
