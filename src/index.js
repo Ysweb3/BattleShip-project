@@ -60,7 +60,7 @@ function createGrid(boardElement, size = 10,board) {
             
             boardElement.appendChild(cell);
 
-            board.addElementToCell(row, col, cell);
+            board.addElementToCell(row, col, cell);//this connets the display board to the game board
 
 }
     }
@@ -78,7 +78,8 @@ function gameLoop(playerBoard,opponentBoard,player,opponent){
 //then gameloop will start
 //in gameloop first player will attack then opponent will attack
 //whilst checking for allShipsSunk to declare winner and end   
-   
+   addShipsToBoard(playerBoard);
+   addShipsToBoard(opponentBoard)
    
 }
 
@@ -91,34 +92,21 @@ function checkWinner(playerBoard,opponentBoard,player,opponent){
 }
 
 
-function addShipsToBoard(playerBoard, opponentBoard) {
-    // Add ships to player board
+function addShipsToBoard(board) {
+    // Add ships to the board
     for (let row = 0; row < 10; row++) {
         for (let col = 0; col < 10; col++) {
-            if(Math.random() > 0.8){
-                playerBoard.placeShip(row, col);
+            if(Math.random() > 0.85){
+                board.placeShip(row, col);
                 console.log("Placing ship at " + row + ", " + col);
-                addShipColor(row, col, playerBoard);
+                board.board[row][col].element.style.backgroundColor = '#4dabf7';
             }
         }
     }
 
-    // Add ships to opponent board
-    for (let row = 0; row < 10; row++) {
-        for (let col = 0; col < 10; col++) {
-            if(Math.random() > 0.8){
-                opponentBoard.placeShip(row, col);
-                console.log("Placing ship at " + row + ", " + col);
-                addShipColor(row, col, opponentBoard);
-            }
-        }
-    }
+    
 }
-function addShipColor(row, col, board){
-    if(board.board[row][col].hasShip){
-       board.board[row][col].element.style.backgroundColor = '#4dabf7';
-    }
-}
+
 playerBoard.createGameBoard();
 opponentBoard.createGameBoard();
 createGrid(playerboard, 10, playerBoard);
