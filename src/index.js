@@ -12,9 +12,9 @@ const opponent = new AIPlayer();
 const playerboard = document.getElementById('playerBoard');
 const opponentboard = document.getElementById('opponentBoard');
 
-playerBoard.createGameBoard();
 
-function createGrid(boardElement, size = 10) {
+
+function createGrid(boardElement, size = 10,board) {
     // Clear any existing grid
     boardElement.innerHTML = '';
     
@@ -40,16 +40,16 @@ function createGrid(boardElement, size = 10) {
             cell.style.border = '1px solid #666';
             cell.style.backgroundColor = '#f0f0f0';
             cell.style.cursor = 'pointer';
-            cell.style.transition = 'background-color 0.2s';
+            cell.style.transition = 'background-color 0.6s';// Smooth transition for hover effect change this to make it faster or slower
             
 
-            cell.addEventListener('mouseenter', () => {
+            cell.addEventListener('mouseOver', () => {
                 if (!cell.classList.contains('hit') && !cell.classList.contains('miss')) {
                     cell.style.backgroundColor = '#868585ff';
                 }
             });
             
-            cell.addEventListener('mouseleave', () => {
+            cell.addEventListener('mouseLeave', () => {
                 if (!cell.classList.contains('hit') && !cell.classList.contains('miss')) {
                     cell.style.backgroundColor = '#f0f0f0';
                 }
@@ -60,6 +60,7 @@ function createGrid(boardElement, size = 10) {
             
             boardElement.appendChild(cell);
 
+            board.addElementToCell(row, col, cell);
 
 }
     }
@@ -67,9 +68,60 @@ function createGrid(boardElement, size = 10) {
 
 function handleCellClick(row, col, cell){
     console.log("row: " + row + " col: " + col);
-    cell.style.backgroundColor = '#ff0000';
-    cell.classList.add('miss');
+    if(playerBoard.board[row][col].hasShip||opponentBoard.board[row][col].hasShip ){
+        cell.style.backgroundColor = '#ff1717ff';
+    }
+ 
+}
+function gameLoop(playerBoard,opponentBoard,player,opponent){
+//first place ships function is called to wait till all ships are placed
+//then gameloop will start
+//in gameloop first player will attack then opponent will attack
+//whilst checking for allShipsSunk to declare winner and end   
+   
+   
 }
 
-createGrid(playerboard, 10);
-createGrid(opponentboard, 10);
+function placeShips(playerBoard,opponentBoard,player,opponent){
+    
+}
+
+function checkWinner(playerBoard,opponentBoard,player,opponent){
+    
+}
+
+
+function addShipsToBoard(playerBoard, opponentBoard) {
+    // Add ships to player board
+    for (let row = 0; row < 10; row++) {
+        for (let col = 0; col < 10; col++) {
+            if(Math.random() > 0.8){
+                playerBoard.placeShip(row, col);
+                console.log("Placing ship at " + row + ", " + col);
+                addShipColor(row, col, playerBoard);
+            }
+        }
+    }
+
+    // Add ships to opponent board
+    for (let row = 0; row < 10; row++) {
+        for (let col = 0; col < 10; col++) {
+            if(Math.random() > 0.8){
+                opponentBoard.placeShip(row, col);
+                console.log("Placing ship at " + row + ", " + col);
+                addShipColor(row, col, opponentBoard);
+            }
+        }
+    }
+}
+function addShipColor(row, col, board){
+    if(board.board[row][col].hasShip){
+       board.board[row][col].element.style.backgroundColor = '#4dabf7';
+    }
+}
+playerBoard.createGameBoard();
+opponentBoard.createGameBoard();
+createGrid(playerboard, 10, playerBoard);
+createGrid(opponentboard, 10, opponentBoard);
+gameLoop(playerBoard, opponentBoard, 'player', 'opponent');
+addShipsToBoard(playerBoard, opponentBoard);

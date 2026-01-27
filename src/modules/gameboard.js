@@ -1,3 +1,4 @@
+//TODO: add ship placement logic and change the way ship namse are created
 import { Ship } from './ship.js';
 export class Gameboard {//Gameboard class:Grid of 10x10 cells,total two gameboards(player and AI)
     board = [];
@@ -13,9 +14,9 @@ export class Gameboard {//Gameboard class:Grid of 10x10 cells,total two gameboar
         const row = [];
         for (let j = 0; j < 10; j++) {
             row.push({
-                hasShip: false,  // Boolean indicating if a ship is present
-                isHit: false,    // Boolean indicating if this cell has been attacked
-                ship: null       // Reference to the ship object (if any)
+                hasShip: false,  
+                isHit: false,    
+                ship: null,       // Reference to the ship object (if any)
             });
         }
         board.push(row);
@@ -50,7 +51,9 @@ export class Gameboard {//Gameboard class:Grid of 10x10 cells,total two gameboar
         this.totalAttempts++;
         return false;
     }
-    
+    checkCell(x,y){
+        return this.board[x][y];
+    }
     totalAttempts(){
         return this.totalAttempts;
     }
@@ -62,5 +65,8 @@ export class Gameboard {//Gameboard class:Grid of 10x10 cells,total two gameboar
     }
     allShipsSunk() {//To be checked every turn to determine if the game is over
         return this.totalShips === this.totalHits;
+    }
+    addElementToCell(x,y,element){
+        this.board[x][y].element = element;
     }
 }
