@@ -37,7 +37,7 @@ body{
 #boardContainer{
     display: flex;
     justify-content: center;
-    margin-top: 50px;
+    
 }
 
 .cell {
@@ -54,4 +54,41 @@ body{
 
 .ship {
     background-color: #4dabf7; 
+}
+#shipContainer{
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+    
+}
+.ships{
+    margin: 10px;
+    border: 1px solid #333;
+    padding: 5px;
+    border-radius: 5px;
+    
+}
+#display{
+    display: flex;
+    justify-content: center;
+    margin-top: 0px;
+    
+}
+#player-name-container{
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+    align-items: center;    
+    
+}
+.player-name{
+    margin: 10px;
+    border: 1px solid #333;
+    padding: 5px;
+    border-radius: 5px;
+    width: 100px;
+    text-align: center;
+    margin-left: 70px;
+    margin-right: 70px;
+
 }
