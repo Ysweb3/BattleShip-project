@@ -19,11 +19,12 @@ const cruiser = document.getElementById('cruiser');
 const submarine = document.getElementById('submarine');
 const destroyer = document.getElementById('destroyer');
 const playername = document.getElementById('player-name');
-const opponentname = document.getElementById('opponent-name');
+const opponentname = document.getElementById('opp-name');
 
 let turn = 'player1';
 let totalShips = 5;
 let selectedShip = null;
+let selected = false;
 let shipTypes = [
     { name: 'carrier', length: 5 },
     { name: 'battleship', length: 4 },
@@ -36,18 +37,21 @@ function placeShipManually(board,shipTypes){
     for(let i = 0; i < totalShips; i++){
         const ship = document.getElementById(shipTypes[i].name);
         ship.addEventListener('click', () => {
-            console.log(shipTypes[i].name);
-            console.log(shipTypes[i].length);
+            selected = true;
             selectedShip = shipTypes[i];
+
+
+            console.log(selectedShip)
+            console.log(selected)
         })
     }
-    // board.placeShip(row, col, "ship");
-    // console.log("Placing ship at " + row + ", " + col);
-    // board.board[row][col].element.style.backgroundColor = '#4dabf7';
-    // board.board[row][col].element.classList.add('ship');
-    // console.log(rowboard);
-    // console.log(colboard);
-
+    board.placeShip(rowboard, colboard, "ship");
+    console.log("Placing ship at " + rowboard + ", " + colboard);
+    board.board[rowboard][colboard].element.style.backgroundColor = '#4dabf7';
+    board.board[rowboard][colboard].element.classList.add('ship');
+    console.log(rowboard);
+    console.log(colboard);
+    return 0;
 }
 
 
@@ -154,19 +158,41 @@ function handleCellClick(row, col, cell, boardType){
         console.log("Player1 Wins!");
     }
 }
-function gameLoop(playerBoard,opponentBoard,player,opponent){
+function setboards(playerBoard,opponentBoard,player,opponent){
 
-    
     playerBoard.createGameBoard();
     opponentBoard.createGameBoard();
-    createGrid(playerboard, 10, playerBoard, 'player');
-    createGrid(opponentboard, 10, opponentBoard, 'opponent');
-    addShipsToBoard(playerBoard);
-    addShipsToBoard(opponentBoard);
+    createGrid(playerboard, 10, playerBoard, player);
+    createGrid(opponentboard, 10, opponentBoard, opponent);
    
+    
+  
+   
+}
+function setUsername(){
+    //get user input
+    //set user name
+    const name = prompt("Enter your name:");
+    playername.textContent = name;
+    opponentname.textContent = "Opponent";
 }
 
 
+function gamePhase(){
+    //first ask user names
+    //prompt to place ships
+    //player places ships
+    //opponent places ships
+    //start the gameloop
+    //declare winner
+
+    setUsername();
+    setboards(playerBoard, opponentBoard, 'player', 'opponent');
+    placeShipManually(playerBoard,shipTypes);
+    gameLoop(playerBoard, opponentBoard, 'player', 'opponent');
+
+    
+}
 
 
 
@@ -185,8 +211,5 @@ function addShipsToBoard(board) {
 
     
 }
+gamePhase()
 
-
-gameLoop(playerBoard, opponentBoard, 'player', 'opponent');
-addShipsToBoard(playerBoard, opponentBoard);
-placeShipManually(playerBoard,shipTypes);
