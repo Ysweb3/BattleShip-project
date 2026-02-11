@@ -34,5 +34,30 @@ export default function renderPlaceShip() {
     });
 
     document.body.appendChild(shipContainer);
+
+    
     return true;
+
+}
+
+ export function placeShipManually(board,shipTypes){
+    for(let i = 0; i < totalShips; i++){
+        const ship = document.getElementById(shipTypes[i].name);
+        ship.addEventListener('click', () => {
+            selected = true;
+            selectedShip = shipTypes[i];
+
+
+            console.log(selectedShip)
+            console.log(selected)
+        })
+    }
+    board.placeShip(rowboard, colboard, "ship");
+    console.log("Placing ship at " + rowboard + ", " + colboard);
+    board.board[rowboard][colboard].element.style.backgroundColor = '#4dabf7';
+    board.board[rowboard][colboard].element.classList.add('ship');
+    console.log(rowboard);
+    console.log(colboard);
+    return 0;
+    
 }
