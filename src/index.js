@@ -4,6 +4,8 @@ import { Ship } from './modules/ship';
 import { RealPlayer } from './modules/player';
 import { AIPlayer } from './modules/player';
 
+import renderPlaceShip from './phases/placeship'
+
 const playerBoard = new Gameboard();
 const opponentBoard = new Gameboard();
 const player = new RealPlayer();
@@ -12,14 +14,11 @@ const opponent = new AIPlayer();
 const playerboard = document.getElementById('playerBoard');
 const opponentboard = document.getElementById('opponentBoard');
 const turnDisplay = document.getElementById('turn');
-const ships = document.querySelectorAll('.ships');
-const carrier = document.getElementById('carrier');
-const battleship = document.getElementById('battleship');
-const cruiser = document.getElementById('cruiser');
-const submarine = document.getElementById('submarine');
-const destroyer = document.getElementById('destroyer');
+
 const playername = document.getElementById('player-name');
 const opponentname = document.getElementById('opp-name');
+
+renderPlaceShip();
 
 let turn = 'player1';
 let totalShips = 5;
@@ -164,10 +163,7 @@ function setboards(playerBoard,opponentBoard,player,opponent){
     opponentBoard.createGameBoard();
     createGrid(playerboard, 10, playerBoard, player);
     createGrid(opponentboard, 10, opponentBoard, opponent);
-   
-    
-  
-   
+
 }
 function setUsername(){
     //get user input
@@ -190,7 +186,7 @@ function gamePhase(){
     setboards(playerBoard, opponentBoard, 'player', 'opponent');
     placeShipManually(playerBoard,shipTypes);
     gameLoop(playerBoard, opponentBoard, 'player', 'opponent');
-
+    
     
 }
 
