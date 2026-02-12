@@ -1,63 +1,49 @@
-export default function renderPlaceShip() {
-    // Create header
-    const header = document.createElement('div');
-    header.id = 'header';
-    const headerP = document.createElement('p');
-    headerP.textContent = 'Battleship';
-    header.appendChild(headerP);
-    document.body.appendChild(header);
+import { Ship } from '../modules/ship.js';
 
-    // Create ship container
-    const shipContainer = document.createElement('div');
-    shipContainer.id = 'shipContainer';
 
-    // Create ships
-    const ships = [
-        { id: 'carrier', name: 'carrier', length: 5 },
-        { id: 'battleship', name: 'battleship', length: 4 },
-        { id: 'cruiser', name: 'cruiser', length: 3 },
-        { id: 'submarine', name: 'submarine', length: 3 },
-        { id: 'destroyer', name: 'destroyer', length: 2 }
-    ];
 
-    ships.forEach(ship => {
-        const shipDiv = document.createElement('div');
-        shipDiv.id = ship.id;
-        shipDiv.className = 'ships';
-        shipDiv.textContent = `  ${ship.name} `;
-        
-        const span = document.createElement('span');
-        span.textContent = ` ${ship.length}`;
-        shipDiv.appendChild(span);
-        
-        shipContainer.appendChild(shipDiv);
-    });
 
-    document.body.appendChild(shipContainer);
 
+export function placeShipOnBoard(board, row, col, shipType, orientation = 'horizontal') {
+    // Create a new Ship object
+    const ship = new Ship(shipType.length, shipType.name);
     
-    return true;
-
+    // Check if placement is valid
+    if (isValidPlacement(board, row, col, shipType.length, orientation)) {
+        // Place the ship
+        for (let i = 0; i < shipType.length; i++) {
+            const currentRow = orientation === 'horizontal' ? row : row + i;
+            const currentCol = orientation === 'horizontal' ? col + i : col;
+            
+            board.placeShip(currentRow, currentCol, ship);
+            
+            // Update UI
+            if (board.board[currentRow][currentCol].element) {
+                board.board[currentRow][currentCol].element.style.backgroundColor = '#4dabf7';
+                board.board[currentRow][currentCol].element.classList.add('ship');
+            }
+        }
+        
+        console.log(`Placed ${shipType.name} at (${row}, ${col}) ${orientation}`);
+        return true;
+    }
+    
+    console.log(`Invalid placement for ${shipType.name} at (${row}, ${col}) ${orientation}`);
+    return false;
 }
 
- export function placeShipManually(board,shipTypes){
-    for(let i = 0; i < totalShips; i++){
-        const ship = document.getElementById(shipTypes[i].name);
-        ship.addEventListener('click', () => {
-            selected = true;
-            selectedShip = shipTypes[i];
-
-
-            console.log(selectedShip)
-            console.log(selected)
-        })
+function isValidPlacement(board, row, col, length, orientation) {
+    // Check bounds
+    if (orientation === 'horizontal') {
+        if (col + length > 10) return false;
+        for (let i = 0; i < length; i++) {
+            if (board.board[row][col + i].hasShip) return false;
+        }
+    } else {
+        if (row + length > 10) return false;
+        for (let i = 0; i < length; i++) {
+            if (board.board[row + i][col].hasShip) return false;
+        }
     }
-    board.placeShip(rowboard, colboard, "ship");
-    console.log("Placing ship at " + rowboard + ", " + colboard);
-    board.board[rowboard][colboard].element.style.backgroundColor = '#4dabf7';
-    board.board[rowboard][colboard].element.classList.add('ship');
-    console.log(rowboard);
-    console.log(colboard);
-    return 0;
-    
+    return true;
 }

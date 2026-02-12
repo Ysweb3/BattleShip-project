@@ -2,7 +2,7 @@ import { Gameboard } from '../modules/gameboard.js';
 import { Ship } from '../modules/ship.js';
 import { RealPlayer } from '../modules/player.js';
 import { AIPlayer } from '../modules/player.js';
-import { placeShipManually } from './placeship.js';
+import { placeShipManually, placeShipOnBoard } from './placeship.js';
 
 export default function gameLogic(){
     const playerBoard = new Gameboard();
@@ -18,16 +18,23 @@ export default function gameLogic(){
     const opponentname = document.getElementById('opp-name');
     let turn = 'player1';
     let totalShips = 5;
-    let selectedShip = null;
-    let selected = false;
+    let placedShips = 0;
+    
+    // Game state for ship placement
+    const gameState = {
+        selected: false,
+        selectedShip: null,
+        isPlacingShips: true,
+        orientation: 'horizontal'
+    };
+    
     let shipTypes = [
         { name: 'carrier', length: 5 },
         { name: 'battleship', length: 4 },
         { name: 'cruiser', length: 3 },
         { name: 'submarine', length: 3 },
         { name: 'destroyer', length: 2 }
-];
-    
+    ];
 
 
 
@@ -88,9 +95,46 @@ let colboard = 0;
 
 function handleCellClick(row, col, cell, boardType){
     console.log("row: " + row + " col: " + col + " board: " + boardType);
-    rowboard = row;
-    colboard = col;
     
+    // Handle ship placement phase
+    if (gameState.isPlacingShips) {
+        // Only allow placement on player's board
+        if (boardType !== 'player') {
+            console.log("Ships can only be placed on your board!");
+            return;
+        }
+        
+        if (gameState.selected && gameState.selectedShip) {
+            // Try to place the ship
+            if (placeShipOnBoard(playerBoard, row, col, gameState.selectedShip, gameState.orientation)) {
+                placedShips++;
+                console.log(`Ship placed! ${placedShips}/${totalShips} ships placed.`);
+                
+                // Remove the placed ship from the list
+                const shipElement = document.getElementById(gameState.selectedShip.name);
+                if (shipElement) {
+                    shipElement.style.opacity = '0.5';
+                    shipElement.style.pointerEvents = 'none';
+                }
+                
+                // Reset selection
+                gameState.selected = false;
+                gameState.selectedShip = null;
+                
+                // Check if all ships are placed
+                if (placedShips >= totalShips) {
+                    gameState.isPlacingShips = false;
+                    console.log("All ships placed! Starting game...");
+                    turnDisplay.textContent = "Game Start! Player 1's turn";
+                }
+            }
+        } else {
+            console.log("Please select a ship first!");
+        }
+        return;
+    }
+    
+    // Handle game phase (original logic)
     if(turn === 'player1' && !cell.classList.contains('hit') && !cell.classList.contains('miss')){
         // Player1 can only click on opponent's board
         if(boardType !== 'opponent') {
@@ -147,7 +191,7 @@ function setUsername(){
     //get user input
     //set user name
     // const name = prompt("Enter your name:");
-    playername.textContent = name;
+    playername.textContent = "Player";
     opponentname.textContent = "Opponent";
 }
 
@@ -162,26 +206,27 @@ function gamePhase(){
 
     setUsername();
     setboards(playerBoard, opponentBoard, 'player', 'opponent');
-    placeShipManually(playerBoard,shipTypes);
-    gameLoop(playerBoard, opponentBoard, 'player', 'opponent');
     
+    // Initialize ship placement
+    placeShipManually(playerBoard, shipTypes, gameState);
+    turnDisplay.textContent = "Select a ship to place on your board";
     
+    // Note: gameLoop will be called after all ships are placed
 }
-
 
 
 function addShipsToBoard(board) {
     // Add ships to the board
-    // for (let row = 0; row < 10; row++) {
-    //     for (let col = 0; col < 10; col++) {
-    //         if(Math.random() > 0.9){
-    //             board.placeShip(row, col, "ship");
-    //             // console.log("Placing ship at " + row + ", " + col);
-    //             board.board[row][col].element.style.backgroundColor = '#4dabf7';
-    //             board.board[row][col].element.classList.add('ship');
-    //         }
-    //     }
-    // }
+    for (let row = 0; row < 10; row++) {
+        for (let col = 0; col < 10; col++) {
+            if(Math.random() > 0.9){
+                board.placeShip(row, col, "ship");
+                // console.log("Placing ship at " + row + ", " + col);
+                board.board[row][col].element.style.backgroundColor = '#4dabf7';
+                board.board[row][col].element.classList.add('ship');
+            }
+        }
+    }
 
     
 }
