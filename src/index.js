@@ -63,8 +63,20 @@ function canPlaceShip(board, row, col, length, orientation) {
             if (board.board[row + i][col].hasShip) return false;
         }
     }
+    // Check adjacent cells
+    for (let i = -1; i <= length; i++) {
+        for (let j = -1; j <= 1; j++) {
+            const checkRow = row + j;
+            const checkCol = col + i;
+            if (checkRow >= 0 && checkRow < 10 && checkCol >= 0 && checkCol < 10) {
+                if (board.board[checkRow][checkCol].hasShip) return false;
+            }
+        }
+    }
     return true;
 }
+
+
 
 function placeShip(board, row, col, shipType, orientation) {
     const ship = new Ship(shipType.length, shipType.name);
@@ -230,8 +242,11 @@ function gameLoop() {
 }
 
 randomizeButton.addEventListener('click', () => {
-    
+    playerBoard.innerHTML = '';
+    playerBoard.clearGrid();
+    createGrid(playerboard, 10, playerBoard, 'player');
     placeShipsRandomly(playerBoard, shipTypes);
+    console.log("Player board randomized!");
 });
 
 // Start 
