@@ -64,4 +64,16 @@ export class Gameboard {//Gameboard class:Grid of 10x10 cells,total two gameboar
     addElementToCell(x,y,element){
         this.board[x][y].element = element;
     }
+    clearGrid(){
+        for(let i = 0; i < 10; i++){
+            for(let j = 0; j < 10; j++){
+                this.board[i][j].hasShip = false;
+                this.board[i][j].element = null;
+                this.board[i][j].isHit = false;
+                this.board[i][j].ship = null;
+            
+            }
+        }
+        this.totalShips = 0;
+    }
 }

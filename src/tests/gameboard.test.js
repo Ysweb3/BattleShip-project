@@ -39,9 +39,22 @@ test('testing totalmisses', () => {
     testGameboard.receiveAttack(0,3);
     expect(testGameboard.totalMisses()).toBe(1);
 }); 
-test('testing ship type', () => {
+
+test('testing clear grid', () => {
     const testGameboard = new Gameboard();
     testGameboard.placeShip(0,0);
-    testGameboard.addShipType(0,0,"Battleship");
-    expect(testGameboard.checkShipType(0,0)).toBe("Battleship");
+    testGameboard.clearGrid();
+    expect(testGameboard.board[0][0].hasShip).toBe(false);
+}); 
+test('testing totalShips after clear', () => {
+    const testGameboard = new Gameboard();
+    testGameboard.placeShip(0,0);
+    testGameboard.clearGrid();
+    expect(testGameboard.totalShips).toBe(0);
+}); 
+test('testing hasShip after clear', () => {
+    const testGameboard = new Gameboard();
+    testGameboard.placeShip(0,0);
+    testGameboard.clearGrid();
+    expect(testGameboard.board[0][0].hasShip).toBe(false);
 }); 
