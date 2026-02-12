@@ -12,19 +12,11 @@ const opponent = new AIPlayer();
 const playerboard = document.getElementById('playerBoard');
 const opponentboard = document.getElementById('opponentBoard');
 const turnDisplay = document.getElementById('turn');
-const ships = document.querySelectorAll('.ships');
-const carrier = document.getElementById('carrier');
-const battleship = document.getElementById('battleship');
-const cruiser = document.getElementById('cruiser');
-const submarine = document.getElementById('submarine');
-const destroyer = document.getElementById('destroyer');
 const playername = document.getElementById('player-name');
 const opponentname = document.getElementById('opp-name');
+const randomizeButton = document.getElementById('randomize');
 
 let turn = 'player1';
-let totalShips = 5;
-let selectedShip = null;
-let selected = false;
 let shipTypes = [
     { name: 'carrier', length: 5 },
     { name: 'battleship', length: 4 },
@@ -33,27 +25,63 @@ let shipTypes = [
     { name: 'destroyer', length: 2 }
 ];
 
-function placeShipManually(board,shipTypes){
-    for(let i = 0; i < totalShips; i++){
-        const ship = document.getElementById(shipTypes[i].name);
-        ship.addEventListener('click', () => {
-            selected = true;
-            selectedShip = shipTypes[i];
-
-
-            console.log(selectedShip)
-            console.log(selected)
-        })
-    }
-    board.placeShip(rowboard, colboard, "ship");
-    console.log("Placing ship at " + rowboard + ", " + colboard);
-    board.board[rowboard][colboard].element.style.backgroundColor = '#4dabf7';
-    board.board[rowboard][colboard].element.classList.add('ship');
-    console.log(rowboard);
-    console.log(colboard);
-    return 0;
+// Random ship placement function
+function placeShipsRandomly(board, shipTypes) {
+    shipTypes.forEach(shipType => {
+        let placed = false;
+        let attempts = 0;
+        const maxAttempts = 100;
+        
+        while (!placed && attempts < maxAttempts) {
+            const orientation = Math.random() < 0.5 ? 'horizontal' : 'vertical';
+            const row = Math.floor(Math.random() * 10);
+            const col = Math.floor(Math.random() * 10);
+            
+            if (canPlaceShip(board, row, col, shipType.length, orientation)) {
+                placeShip(board, row, col, shipType, orientation);
+                placed = true;
+                console.log(`Placed ${shipType.name} at (${row}, ${col}) ${orientation}`);
+            }
+            attempts++;
+        }
+        
+        if (!placed) {
+            console.error(`Failed to place ${shipType.name} after ${maxAttempts} attempts`);
+        }
+    });
 }
 
+function canPlaceShip(board, row, col, length, orientation) {
+    if (orientation === 'horizontal') {
+        if (col + length > 10) return false;
+        for (let i = 0; i < length; i++) {
+            if (board.board[row][col + i].hasShip) return false;
+        }
+    } else {
+        if (row + length > 10) return false;
+        for (let i = 0; i < length; i++) {
+            if (board.board[row + i][col].hasShip) return false;
+        }
+    }
+    return true;
+}
+
+function placeShip(board, row, col, shipType, orientation) {
+    const ship = new Ship(shipType.length, shipType.name);
+    
+    for (let i = 0; i < shipType.length; i++) {
+        const currentRow = orientation === 'horizontal' ? row : row + i;
+        const currentCol = orientation === 'horizontal' ? col + i : col;
+        
+        board.placeShip(currentRow, currentCol, ship);
+        
+        // Update UI for player board only
+        if (board === playerBoard && board.board[currentRow][currentCol].element) {
+            board.board[currentRow][currentCol].element.style.backgroundColor = '#4dabf7';
+            board.board[currentRow][currentCol].element.classList.add('ship');
+        }
+    }
+}
 
 function createGrid(boardElement, size = 10,board,boardType) {
     // Clear any existing grid
@@ -179,36 +207,32 @@ function setUsername(){
 
 
 function gamePhase(){
-    //first ask user names
-    //prompt to place ships
-    //player places ships
-    //opponent places ships
-    //start the gameloop
-    //declare winner
-
     setUsername();
     setboards(playerBoard, opponentBoard, 'player', 'opponent');
-    placeShipManually(playerBoard,shipTypes);
-    gameLoop(playerBoard, opponentBoard, 'player', 'opponent');
-
     
+    // Place ships randomly for both players
+    console.log("Placing ships for player...");
+    placeShipsRandomly(playerBoard, shipTypes);
+    
+    console.log("Placing ships for opponent...");
+    placeShipsRandomly(opponentBoard, shipTypes);
+    
+    console.log("All ships placed! Starting game...");
+    turnDisplay.textContent = "Game Start! Player 1's turn";
+    
+   
+    gameLoop();
 }
 
-
-
-function addShipsToBoard(board) {
-    // Add ships to the board
-    // for (let row = 0; row < 10; row++) {
-    //     for (let col = 0; col < 10; col++) {
-    //         if(Math.random() > 0.9){
-    //             board.placeShip(row, col, "ship");
-    //             // console.log("Placing ship at " + row + ", " + col);
-    //             board.board[row][col].element.style.backgroundColor = '#4dabf7';
-    //             board.board[row][col].element.classList.add('ship');
-    //         }
-    //     }
-    // }
-
-    
+function gameLoop() {
+ 
+    console.log("Game is ready! Click on opponent's board to attack.");
 }
-gamePhase()
+
+randomizeButton.addEventListener('click', () => {
+    
+    placeShipsRandomly(playerBoard, shipTypes);
+});
+
+// Start 
+gamePhase();
