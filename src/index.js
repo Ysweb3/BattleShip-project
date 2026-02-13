@@ -156,12 +156,12 @@ function handleCellClick(row, col, cell, boardType){
     rowboard = row;
     colboard = col;
     
-    
+    randomizeButton.textContent = 'Game Started';
     if(gameEnded) {
         console.log("Game has ended!");
         return;
     }
-    
+    console.log("Cell classes:", cell.className);
     if(turn === 'player1' && !cell.classList.contains('hit') && !cell.classList.contains('miss')){
         // Player1 can only click on opponent's board
         if(boardType !== 'opponent') {
@@ -178,6 +178,7 @@ function handleCellClick(row, col, cell, boardType){
         }
         turn = 'player2';
         turnDisplay.textContent = 'Player 2\'s turn';
+        opponentAi();
     }
     else if(turn === 'player2' && !cell.classList.contains('hit') && !cell.classList.contains('miss')){
         // Player2 can only click on player's board
@@ -185,17 +186,7 @@ function handleCellClick(row, col, cell, boardType){
             console.log("Player2 can only attack player's board!");
             return;
         }
-        
-        if(playerBoard.checkboat(row,col)){
-            cell.classList.add('hit');
-            playerBoard.receiveAttack(row,col);
-            console.log("Hit!");
-        } else {
-            cell.classList.add('miss');
-            console.log("Miss!");
-        }
-        turn = 'player1';
-        turnDisplay.textContent = 'Player 1\'s turn';
+      
     }
     
     // Check for game over
@@ -223,8 +214,8 @@ function setboards(playerBoard,opponentBoard,player,opponent){
 function setUsername(){
     //get user input
     //set user name
-    const name = prompt("Enter your name:");
-    playername.textContent = name;
+    // const name = prompt("Enter your name:");
+    // playername.textContent = name;
 
 }
 
@@ -314,4 +305,89 @@ function showVictoryPanel(winnerName) {
     
     // Add panel to body
     document.body.appendChild(victoryPanel);
+}
+let doRandomHit = true;
+let AiHit = false;
+let AiRow = 0;
+let AiCol = 0;
+let AiDirection = 0;
+let directions = [
+    [-1, 0],  // top
+    [0, 1],   // right  
+    [1, 0],   // bottom
+    [0, -1]   // left
+];
+
+function opponentAi(){
+    if(!AiHit){
+        //random hitting logic
+        let row = Math.floor(Math.random() * 10);
+        let col = Math.floor(Math.random() * 10);
+        let cell = playerboard.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+        console.log(row,col)
+        if(playerBoard.checkboat(row,col)){
+            cell.classList.add('hit');
+            playerBoard.receiveAttack(row,col);
+            console.log("Hit!");
+            AiHit = true;
+            AiRow = row;
+            AiCol = col;
+        } else {
+            cell.classList.add('miss');
+            console.log("Miss!");
+            AiHit = false;
+        }
+        turn = 'player1';
+        turnDisplay.textContent = 'Player 1\'s turn';
+    }
+    if(AiHit){
+    let foundValidTarget = false;
+    let attempts = 0;
+    
+    // Try up to 4 directions to find a clean cell
+    while (!foundValidTarget && attempts < 4) {
+        const [dr, dc] = directions[AiDirection];
+        const targetRow = AiRow + dr;
+        const targetCol = AiCol + dc;
+        
+        
+        if (targetRow >= 0 && targetRow < 10 && targetCol >= 0 && targetCol < 10) {
+            let targetCell = playerboard.querySelector(`.cell[data-row="${targetRow}"][data-col="${targetCol}"]`);
+            
+           
+            if (targetCell && !targetCell.classList.contains('hit') && !targetCell.classList.contains('miss')) {
+               
+                if(playerBoard.checkboat(targetRow, targetCol)){
+                    targetCell.classList.add('hit');
+                    playerBoard.receiveAttack(targetRow, targetCol);
+                    console.log("AI Hit again at:", targetRow, targetCol);
+                    
+                    AiRow = targetRow;
+                    AiCol = targetCol;
+                } else {
+                    targetCell.classList.add('miss');
+                    console.log("AI Miss at:", targetRow, targetCol);
+                    
+                    AiDirection = (AiDirection + 1) % 4;
+                }
+                foundValidTarget = true;
+            } else {
+               
+                AiDirection = (AiDirection + 1) % 4;
+                attempts++;
+            }
+        } else { 
+            AiDirection = (AiDirection + 1) % 4;
+            attempts++;
+        }
+    }
+    
+    // If all 4 directions tried, reset to random
+    if (!foundValidTarget) {
+        AiHit = false;
+    }
+}
+        turn = 'player1';
+        turnDisplay.textContent = 'Player 1\'s turn';
+    
 }
