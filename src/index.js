@@ -149,11 +149,18 @@ function createGrid(boardElement, size = 10,board,boardType) {
 }
 let rowboard = 0;
 let colboard = 0;
+let gameEnded = false;
 
 function handleCellClick(row, col, cell, boardType){
     console.log("row: " + row + " col: " + col + " board: " + boardType);
     rowboard = row;
     colboard = col;
+    
+    
+    if(gameEnded) {
+        console.log("Game has ended!");
+        return;
+    }
     
     if(turn === 'player1' && !cell.classList.contains('hit') && !cell.classList.contains('miss')){
         // Player1 can only click on opponent's board
@@ -193,9 +200,13 @@ function handleCellClick(row, col, cell, boardType){
     
     // Check for game over
     if(playerBoard.allShipsSunk()){
+        gameEnded = true;
         console.log("Player2 Wins!");
+        showVictoryPanel(opponentname.textContent);
     } else if(opponentBoard.allShipsSunk()){
+        gameEnded = true;
         console.log("Player1 Wins!");
+        showVictoryPanel(playername.textContent);
     }
 }
 function setboards(playerBoard,opponentBoard,player,opponent){
@@ -214,7 +225,7 @@ function setUsername(){
     //set user name
     const name = prompt("Enter your name:");
     playername.textContent = name;
-    opponentname.textContent = "Opponent";
+
 }
 
 
@@ -251,3 +262,56 @@ randomizeButton.addEventListener('click', () => {
 
 // Start 
 gamePhase();
+
+function showVictoryPanel(winnerName) {
+    // Create victory panel
+    const victoryPanel = document.createElement('div');
+    victoryPanel.id = 'victoryPanel';
+    victoryPanel.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        text-align: center;
+        z-index: 1000;
+    `;
+    
+    // Create victory message
+    const victoryMessage = document.createElement('h2');
+    victoryMessage.textContent = `${winnerName} Wins!`;
+    victoryMessage.style.cssText = `
+        color: #2d3436;
+        margin-bottom: 20px;
+        font-size: 24px;
+    `;
+    
+    // Create play again button
+    const playAgainButton = document.createElement('button');
+    playAgainButton.textContent = 'Play Again';
+    playAgainButton.style.cssText = `
+        background: #0984e3;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 10px;
+    `;
+    
+    // Add click event to reload page
+    playAgainButton.addEventListener('click', () => {
+        location.reload();
+    });
+    
+    // Add elements to panel
+    victoryPanel.appendChild(victoryMessage);
+    victoryPanel.appendChild(playAgainButton);
+    
+    // Add panel to body
+    document.body.appendChild(victoryPanel);
+}
