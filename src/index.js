@@ -11,7 +11,6 @@ const opponent = new AIPlayer();
 
 const playerboard = document.getElementById("playerBoard");
 const opponentboard = document.getElementById("opponentBoard");
-const turnDisplay = document.getElementById("turn");
 const playername = document.getElementById("player-name");
 const opponentname = document.getElementById("opp-name");
 const randomizeButton = document.getElementById("randomize");
@@ -117,13 +116,13 @@ function createGrid(boardElement, size = 10, board, boardType) {
       cell.dataset.col = col;
 
       cell.style.aspectRatio = "1";
-      cell.style.height = "20px";
-      cell.style.width = "20px";
-      cell.style.border = "1px solid #666";
-      cell.style.borderRadius = "2px";
+      cell.style.height = "30px";
+      cell.style.width = "30px";
+      cell.style.border = "0.5px solid #bdc3c7";
+      cell.style.borderRadius = "3px";
       cell.style.backgroundColor = "#f0f0f0";
       cell.style.cursor = "pointer";
-      cell.style.transition = "background-color 0.6s"; // Smooth transition for hover effect change this to make it faster or slower
+      cell.style.transition = "background-color 0.3s"; // Smooth transition for hover effect change this to make it faster or slower
 
       cell.addEventListener("mouseover", () => {
         if (
@@ -165,6 +164,7 @@ function handleCellClick(row, col, cell, boardType) {
   colboard = col;
 
   randomizeButton.textContent = "Game Started";
+    randomizeButton.setAttribute('disabled', 'true');
   if (gameEnded) {
     console.log("Game has ended!");
     return;
@@ -189,7 +189,6 @@ function handleCellClick(row, col, cell, boardType) {
       console.log("Miss!");
     }
     turn = "player2";
-    turnDisplay.textContent = "Player 2's turn";
     opponentAi();
   } else if (
     turn === "player2" &&
@@ -239,7 +238,6 @@ function gamePhase() {
   placeShipsRandomly(opponentBoard, shipTypes);
 
   console.log("All ships placed! Starting game...");
-  turnDisplay.textContent = "Game Start! Player 1's turn";
 
   gameLoop();
 }
@@ -345,7 +343,7 @@ function opponentAi() {
       AiHit = false;
     }
     turn = "player1";
-    turnDisplay.textContent = "Player 1's turn";
+
   }
   if (AiHit) {
     let foundValidTarget = false;
@@ -375,6 +373,7 @@ function opponentAi() {
           if (playerBoard.checkboat(targetRow, targetCol)) {
             targetCell.classList.add("hit");
             playerBoard.receiveAttack(targetRow, targetCol);
+             
             console.log("AI Hit again at:", targetRow, targetCol);
 
             AiRow = targetRow;
@@ -402,5 +401,5 @@ function opponentAi() {
     }
   }
   turn = "player1";
-  turnDisplay.textContent = "Player 1's turn";
+
 }
